@@ -6,6 +6,31 @@
 - Execute a command after querying GPT-3.5-Turbo-Instruct using natural language.
 - Prompt the model in both English and Spanish.
 
+## Prerequisites
+
+Before you can run `linda`, you need to have `jq` installed on your system. `jq` is a lightweight and flexible command-line JSON processor.
+
+### Installing jq
+
+On most systems, you can install `jq` using the package manager:
+
+- **On Debian/Ubuntu**:
+  ```bash
+  sudo apt-get install jq
+  ```
+
+- **On Red Hat/Fedora**:
+  ```bash
+  sudo yum install jq
+  ```
+
+- **On macOS** (using Homebrew):
+  ```bash
+  brew install jq
+  ```
+
+For other systems or methods, please refer to the [official jq documentation](https://stedolan.github.io/jq/download/).
+
 ## Motivation
 
 The project was inspired by [pls](https://github.com/MxDkl/pls) by Max Dekel, which is licensed under the MIT License. However, there are a few distinctions between `linda` and Max's `pls`:
