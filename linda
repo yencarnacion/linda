@@ -44,7 +44,7 @@ shift $((OPTIND - 1))
 
 # Check if no arguments were provided
 if [ $# -eq 0 ]; then
-  echo "linda <your question>:"
+  echo "linda <your question>"
   echo "linda -c <your command>"
   echo "linda -c -s <tu comando en Espa${n_with_tilde}ol>"
   exit 0
@@ -93,8 +93,6 @@ fi
 result=$(echo "$response" | jq -r '.choices[0].text')
 echo -e -n "\033[0;31m" # Set color to red
 echo $result
-
-# Additional code remains unchanged...
 
 # If in command mode (pls or porfa), ask the user for confirmation
 if [ $COMMAND_MODE -eq 1 ]; then
