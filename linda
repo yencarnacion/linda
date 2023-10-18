@@ -1,9 +1,9 @@
 # file: linda
-# Copyright (c) 2023 Yamir Encarnacion using an MIT License 
+# Copyright (c) 2023 Yamir Encarnacion using the MIT License 
 # The acronym "LINDA" stands for "Large language model Imperfect Non-Deterministic Algorithm"
 
 # The code in this file was inpired by https://github.com/MxDkl/pls
-# which was Copyright (c) 2023 Max Dekel using an MIT License
+# which was Copyright (c) 2023 Max Dekel using the MIT License
 
 #!/bin/bash
 
