@@ -36,7 +36,7 @@ The project was inspired by [pls](https://github.com/MxDkl/pls) by Max Dekel, wh
 ```
 yencarnacion@penguin:~/linda$ linda <your question>
 yencarnacion@penguin:~/linda$ linda -c <your command>
-yencarnacion@penguin:~/linda$ linda -c -s <tu comando en Espa&ntilde;ol>
+yencarnacion@penguin:~/linda$ linda -c -s <tu comando en Español>
 ```
 
 ### Examples
