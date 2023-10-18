@@ -28,7 +28,7 @@ while getopts ":cdsh" opt; do
       DEBUG=1
       ;;
     h)
-      echo "linda <your question>:"
+      echo "linda <your question>"
       echo "linda -c <your command in natural language>"
       echo "linda -c -s <tu comando en Espa${n_with_tilde}ol>"
       exit 0
