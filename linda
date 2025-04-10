@@ -1,11 +1,10 @@
+#!/bin/bash
 # file: linda
 # Copyright (c) 2023 Yamir Encarnacion using the MIT License 
 # The acronym "LINDA" stands for "Large language model Imperfect Non-Deterministic Algorithm"
-
-# The code in this file was inpired by https://github.com/MxDkl/pls
+#
+# The code in this file was inspired by https://github.com/MxDkl/pls
 # which was Copyright (c) 2023 Max Dekel using the MIT License
-
-#!/bin/bash
 
 n_with_tilde=$'\xc3\xb1'
 
@@ -63,20 +62,28 @@ os=$(cat /etc/*-release | grep "NAME" -m 1 | cut -d "=" -f 2 | sed 's/"//g' | tr
 set -f
 
 if [ $COMMAND_MODE -eq 1 ] && [ $SPANISH_MODE -eq 0 ]; then
-  prompt="You are a helpful assistant. You will generate '$SHELL' commands based on user input. Your response should contain ONLY the command and NO explanation. Do NOT ever use newlines to separate commands, instead use ; or &&. The operating system is '$os' The current working directory is '$cwd' Input: '$args'"
+  prompt="You are a helpful assistant. You will generate '$SHELL' commands based on user input. Your response should contain ONLY the command and NO explanation. Do NOT ever use newlines to separate commands, instead use ; or &&. Assume the command is going to be executed on the command line exacty as you give it so dont enclose the command in safety quotes.  The operating system is '$os' The current working directory is '$cwd' Input: '$args'"
 elif [ $COMMAND_MODE -eq 1 ] && [ $SPANISH_MODE -eq 1 ]; then
   prompt="Eres un asistente util. Generaras comandos de '$SHELL' basados en la entrada del usuario. Tu respuesta debe contener SOLO el comando y SIN explicaciones. NO utilices nunca saltos de linea para separar comandos, en su lugar usa ; o &&. El sistema operativo es '$os' El directorio de trabajo actual es '$cwd' Entrada: '$args'"
 else
   prompt="You are a helpful assistant. You will generate an answer to a query based on user input. Your response should take into consideration that the user is using '$SHELL' the operating system is '$os' The current working directory is '$cwd' Input: '$args'"
 fi
 
-# Execute curl command and save the response
-response=$(curl -s "https://api.openai.com/v1/completions" -H "Content-Type: application/json" -H "Authorization: Bearer $token" --data-binary @- <<< "{\"model\": \"gpt-3.5-turbo-instruct\", \"prompt\": \"$prompt\", \"temperature\": 0.0, \"max_tokens\": 1000}")
+# Execute curl command and save the response using the Chat Completions endpoint and gpt-4o
+response=$(curl -s "https://api.openai.com/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $token" \
+  --data-binary @- <<< "{
+    \"model\": \"gpt-4o\",
+    \"messages\": [{\"role\": \"user\", \"content\": \"$prompt\"}],
+    \"temperature\": 0.0,
+    \"max_tokens\": 1000
+}")
 
 # Echo curl command if debug mode is on
 if [ $DEBUG -eq 1 ]; then
   echo "Debug mode ON."
-  echo "curl -s 'https://api.openai.com/v1/completions' -H 'Content-Type: application/json' -H 'Authorization: Bearer $token' --data-binary @- <<< '{\"model\": \"gpt-3.5-turbo-instruct\", \"prompt\": \"$prompt\", \"temperature\": 0.0, \"max_tokens\": 1000}'"
+  echo "curl -s 'https://api.openai.com/v1/chat/completions' -H 'Content-Type: application/json' -H 'Authorization: Bearer $token' --data-binary @- <<< '{\"model\": \"gpt-4o\", \"messages\": [{\"role\": \"user\", \"content\": \"$prompt\"}], \"temperature\": 0.0, \"max_tokens\": 1000}'"
 fi
 
 # Handle API errors
@@ -89,12 +96,12 @@ if [ "$error" != "null" ]; then
     exit 1
 fi
 
-# Output the result
-result=$(echo "$response" | jq -r '.choices[0].text')
+# Parse and output the result (Chat API returns the answer under choices[0].message.content)
+result=$(echo "$response" | jq -r '.choices[0].message.content')
 echo -e -n "\033[0;31m" # Set color to red
 echo $result
 
-# If in command mode (pls or porfa), ask the user for confirmation
+# If in command mode, ask the user for confirmation before executing
 if [ $COMMAND_MODE -eq 1 ]; then
     echo -e -n "\033[0;34m" # Set color to blue
 
@@ -123,7 +130,7 @@ if [ $COMMAND_MODE -eq 1 ]; then
     # Navigate back to the original working directory
     cd $cwd
 else
-    # Re-enable globbing for pregunta mode
+    # Re-enable globbing for non-command mode
     set +f
     echo -e "\033[0m" # Reset color
 fi
